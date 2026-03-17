@@ -3,10 +3,11 @@ const BASE_URL = 'https://freeapi.dgbmc.top';
 
 // 获取用户信息（用于演示登录有效性）
 async function userInfo(cookie) {
-  return axios.get(`${BASE_URL}/console/api/personal`, {
+  return axios.get(`${BASE_URL}/api/user/self`, {
     headers: {
       'cookie': cookie,
-      'referer': 'https://freeapi.dgbmc.top/console'
+      'referer': 'https://freeapi.dgbmc.top/console',
+      'new-api-user': user
     }
   });
 }
@@ -18,7 +19,8 @@ async function signIn(cookie) {
     headers: {
       'cookie': cookie,
       'referer': 'https://freeapi.dgbmc.top/console',
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      'new-api-user': user
     }
   });
 }

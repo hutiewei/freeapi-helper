@@ -15,7 +15,7 @@ async function userInfo(cookie,user) {
 // 签到接口
 async function signIn(cookie,user) {
   // 实际接口根据抓包可能需要调整URL和请求方式
-  return axios.post(`${BASE_URL}/console/api/user/checkin`, null, {
+  return axios.post(`${BASE_URL}/api/user/checkin`, null, {
     headers: {
       'cookie': cookie,
       'referer': 'https://freeapi.dgbmc.top/console',

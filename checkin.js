@@ -24,7 +24,7 @@ async function main() {
 
     // 执行签到
     const res = await signIn(COOKIE, APIUSER);
-    if (res.data.success === success) {
+    if (res.data.success === "success" || res.data.success === true) {
       console.log(`签到成功：${res.data.msg || JSON.stringify(res.data)}`);
     } else {
       console.log(`签到失败：${res.data.msg || JSON.stringify(res.data)}`);

@@ -23,4 +23,5 @@ jobs:
       - name: 执行签到
         env:
           COOKIE: ${{ secrets.COOKIE }}
+          APIUSER: ${{ secrets.APIUSER }}
         run: npm run checkin

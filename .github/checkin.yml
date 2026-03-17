@@ -1,0 +1,26 @@
+name: FreeAPI 每日签到
+
+on:
+  workflow_dispatch:    # 允许手动触发
+  schedule:
+    - cron: '0 23 * * *'   # 每天7:00（北京时间，UTC+8=23:00 UTC）
+
+jobs:
+  checkin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取仓库代码
+        uses: actions/checkout@v4
+
+      - name: 使用 Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 安装依赖
+        run: npm install
+
+      - name: 执行签到
+        env:
+          COOKIE: ${{ secrets.COOKIE }}
+        run: npm run checkin

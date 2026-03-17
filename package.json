@@ -1,0 +1,13 @@
+{
+  "name": "freeapi-helper",
+  "version": "1.0.0",
+  "description": "FreeAPI DGBMC 自动签到小助手",
+  "main": "checkin.js",
+  "scripts": {
+    "checkin": "node checkin.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.0.3"
+  }
+}

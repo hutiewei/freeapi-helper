@@ -2,9 +2,9 @@ require('dotenv').config();
 
 console.log('Loading environment variables...');
 console.log('COOKIE:', process.env.COOKIE);
-console.log('USER:', process.env.USER);
+console.log('APIUSER:', process.env.APIUSER);
 
 module.exports = {
   COOKIE: process.env.COOKIE,
-  USER: process.env.USER
+  APIUSER: process.env.APIUSER
 };

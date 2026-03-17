@@ -16,7 +16,7 @@ async function main() {
     // 用户信息检查
     const userRes = await userInfo(COOKIE, APIUSER);
     const user = userRes.data;
-    if (user.code !== 0) {
+    if (user.success !== true) {
       console.error('登录失败：', user.msg || userRes.data);
       process.exit(1);
     }

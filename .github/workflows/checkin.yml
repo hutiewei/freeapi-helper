@@ -24,4 +24,5 @@ jobs:
         env:
           COOKIE: ${{ secrets.COOKIE }}
           APIUSER: ${{ secrets.APIUSER }}
+          WEIXIN_WEBHOOK: ${{ secrets.WEIXIN_WEBHOOK }}
         run: npm run checkin

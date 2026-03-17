@@ -25,4 +25,24 @@ async function signIn(cookie,user) {
   });
 }
 
-module.exports = { userInfo, signIn };
+// 企业微信推送
+async function sendWechatMessage(webhookUrl, message) {
+  if (!webhookUrl) {
+    console.log('未设置 WEIXIN_WEBHOOK，跳过推送');
+    return;
+  }
+  try {
+    const payload = {
+      msgtype: 'text',
+      text: {
+        content: message
+      }
+    };
+    await axios.post(webhookUrl, payload);
+    console.log('企业微信推送成功');
+  } catch (error) {
+    console.error('企业微信推送失败:', error.message);
+  }
+}
+
+module.exports = { userInfo, signIn, sendWechatMessage };

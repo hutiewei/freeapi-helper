@@ -1,6 +1,7 @@
 const { COOKIE } = require('./utils/env');
 const { APIUSER } = require('./utils/env');
-const { userInfo, signIn } = require('./api');
+const { WEIXIN_WEBHOOK } = require('./utils/env');
+const { userInfo, signIn, sendWechatMessage } = require('./api');
 
 async function main() {
   if (!COOKIE) {
@@ -25,16 +26,24 @@ async function main() {
     // 执行签到
     const res = await signIn(COOKIE, APIUSER);
     if (res.data.success === "success" || res.data.success === true) {
-      console.log(`签到成功：${res.data.msg || JSON.stringify(res.data)}`);
+      const successMsg = `签到成功：${res.data.msg || JSON.stringify(res.data)}`;
+      console.log(successMsg);
+      await sendWechatMessage(WEIXIN_WEBHOOK, successMsg);
     } else {
-      console.log(`签到失败：${res.data.msg || JSON.stringify(res.data)}`);
+      const failMsg = `签到失败：${res.data.msg || JSON.stringify(res.data)}`;
+      console.log(failMsg);
+      await sendWechatMessage(WEIXIN_WEBHOOK, failMsg);
     }
   } catch (err) {
+    let errorMsg = '脚本异常';
     if (err.response) {
+      errorMsg = `接口请求错误: ${err.response.status} - ${JSON.stringify(err.response.data)}`;
       console.error('接口请求错误', err.response.status, err.response.data);
     } else {
+      errorMsg = `脚本异常: ${err.message}`;
       console.error('脚本异常', err.message);
     }
+    await sendWechatMessage(WEIXIN_WEBHOOK, errorMsg);
     process.exit(1);
   }
 }

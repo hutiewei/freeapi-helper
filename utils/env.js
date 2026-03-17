@@ -6,5 +6,5 @@ console.log('USER:', process.env.USER);
 
 module.exports = {
   COOKIE: process.env.COOKIE,
-  user: process.env.USER
+  USER: process.env.USER
 };

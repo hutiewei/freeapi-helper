@@ -74,10 +74,21 @@ jobs:
       - run: npm install
       - run: npm run checkin
         env:
-          COOKIE_1: ${{ secrets.COOKIE_1 }}
-          APIUSER_1: ${{ secrets.APIUSER_1 }}
+          # 第一个账户
+          COOKIE: ${{ secrets.COOKIE }}
+          APIUSER: ${{ secrets.APIUSER }}
+          # 第二个账户
           COOKIE_2: ${{ secrets.COOKIE_2 }}
           APIUSER_2: ${{ secrets.APIUSER_2 }}
-          # ... 添加更多账户
+          # 第三个账户
+          COOKIE_3: ${{ secrets.COOKIE_3 }}
+          APIUSER_3: ${{ secrets.APIUSER_3 }}
+          # 第四个账户
+          COOKIE_4: ${{ secrets.COOKIE_4 }}
+          APIUSER_4: ${{ secrets.APIUSER_4 }}
+          # 第五个账户
+          COOKIE_5: ${{ secrets.COOKIE_5 }}
+          APIUSER_5: ${{ secrets.APIUSER_5 }}
+          # 企业微信推送
           WEIXIN_WEBHOOK: ${{ secrets.WEIXIN_WEBHOOK }}
 ```

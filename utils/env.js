@@ -5,17 +5,22 @@ console.log('Loading environment variables...');
 // 支持最多5个账户
 const accounts = [];
 for (let i = 1; i <= 5; i++) {
-  let cookie, apiuser;
+  let username, password, apiuser;
   if (i === 1) {
-    cookie = process.env.COOKIE;
+    username = process.env.USERNAME;
+    password = process.env.PASSWORD;
     apiuser = process.env.APIUSER;
   } else {
-    cookie = process.env[`COOKIE_${i}`];
+    username = process.env[`USERNAME_${i}`];
+    password = process.env[`PASSWORD_${i}`];
     apiuser = process.env[`APIUSER_${i}`];
   }
-  if (cookie && apiuser) {
-    accounts.push({ cookie, apiuser });
-    console.log(`Account ${i} - COOKIE${i === 1 ? '' : '_' + i}:`, cookie ? '已设置' : '未设置');
+  
+  // 支持用户名密码方式
+  if (username && password && apiuser) {
+    accounts.push({ username, password, apiuser });
+    console.log(`Account ${i} - USERNAME${i === 1 ? '' : '_' + i}:`, username ? '已设置' : '未设置');
+    console.log(`Account ${i} - PASSWORD${i === 1 ? '' : '_' + i}:`, password ? '已设置' : '未设置');
     console.log(`Account ${i} - APIUSER${i === 1 ? '' : '_' + i}:`, apiuser ? '已设置' : '未设置');
   }
 }

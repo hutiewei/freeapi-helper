@@ -1,11 +1,11 @@
 const { accounts } = require('./utils/env');
 const { WEIXIN_WEBHOOK } = require('./utils/env');
-const { userInfo, signIn, sendWechatMessage } = require('./api');
+const { login, userInfo, signIn, sendWechatMessage } = require('./api');
 
 async function main() {
   if (accounts.length === 0) {
-    console.error('请设置至少一个 COOKIE 和 APIUSER 环境变量（Actions Secrets 或 .env 文件）');
-    console.error('支持格式：COOKIE_1, APIUSER_1; COOKIE_2, APIUSER_2; ... 最多5个');
+    console.error('请设置至少一个 USERNAME、PASSWORD 和 APIUSER 环境变量（Actions Secrets 或 .env 文件）');
+    console.error('配置格式：USERNAME_1, PASSWORD_1, APIUSER_1; USERNAME_2, PASSWORD_2, APIUSER_2; ... 最多5个');
     process.exit(1);
   }
 
@@ -13,10 +13,15 @@ async function main() {
   let failCount = 0;
 
   for (let i = 0; i < accounts.length; i++) {
-    const { cookie, apiuser } = accounts[i];
+    let { username, password, apiuser } = accounts[i];
     console.log(`\n=== 处理账户 ${i + 1} ===`);
 
     try {
+      // 通过用户名密码登录获取 cookie
+      console.log(`登录中 (${username})...`);
+      let cookie = await login(username, password);
+      console.log('登录成功，Cookie 已获取');
+
       // 用户信息检查
       const userRes = await userInfo(cookie, apiuser);
       const user = userRes.data;

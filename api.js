@@ -1,6 +1,35 @@
 const axios = require('axios');
 const BASE_URL = 'https://freeapi.dgbmc.top';
 
+// 通过用户名和密码获取 cookie
+async function login(username, password) {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/user/login`, {
+      username: username,
+      password: password
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    // 从响应头或响应体中获取 cookie
+    if (response.headers['set-cookie']) {
+      return response.headers['set-cookie'].join('; ');
+    }
+    
+    // 如果 cookie 在响应体中
+    if (response.data.cookie) {
+      return response.data.cookie;
+    }
+    
+    throw new Error('未能从登录接口获取 cookie');
+  } catch (error) {
+    console.error('登录失败:', error.message);
+    throw error;
+  }
+}
+
 // 获取用户信息（用于演示登录有效性）
 async function userInfo(cookie,user) {
   return axios.get(`${BASE_URL}/api/user/self`, {
@@ -45,4 +74,4 @@ async function sendWechatMessage(webhookUrl, message) {
   }
 }
 
-module.exports = { userInfo, signIn, sendWechatMessage };
+module.exports = { login, userInfo, signIn, sendWechatMessage };

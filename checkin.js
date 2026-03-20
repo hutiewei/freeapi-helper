@@ -1,11 +1,22 @@
-const { accounts } = require('./utils/env');
-const { WEIXIN_WEBHOOK } = require('./utils/env');
+// 输出当前工作目录
+console.log('Checkin script started in:', process.cwd());
+
+const { accounts, WEIXIN_WEBHOOK } = require('./utils/env');
 const { login, userInfo, signIn, sendWechatMessage } = require('./api');
 
 async function main() {
+  console.log('Checking accounts:', accounts);
+  
   if (accounts.length === 0) {
     console.error('请设置至少一个 USERNAME、PASSWORD 和 APIUSER 环境变量（Actions Secrets 或 .env 文件）');
     console.error('配置格式：USERNAME_1, PASSWORD_1, APIUSER_1; USERNAME_2, PASSWORD_2, APIUSER_2; ... 最多5个');
+    console.error('当前环境变量检查：');
+    console.error('USERNAME:', process.env.USERNAME);
+    console.error('PASSWORD:', process.env.PASSWORD ? '***' : undefined);
+    console.error('APIUSER:', process.env.APIUSER);
+    console.error('USERNAME_2:', process.env.USERNAME_2);
+    console.error('PASSWORD_2:', process.env.PASSWORD_2 ? '***' : undefined);
+    console.error('APIUSER_2:', process.env.APIUSER_2);
     process.exit(1);
   }
 

@@ -17,11 +17,16 @@ async function main() {
     console.error('USERNAME_2:', process.env.USERNAME_2);
     console.error('PASSWORD_2:', process.env.PASSWORD_2 ? '***' : undefined);
     console.error('APIUSER_2:', process.env.APIUSER_2);
+    
+    // 发送错误通知
+    const errorMsg = '签到失败：未设置环境变量，请检查 GitHub Secrets 或 .env 文件配置';
+    await sendWechatMessage(WEIXIN_WEBHOOK, errorMsg);
     process.exit(1);
   }
 
   let successCount = 0;
   let failCount = 0;
+  const failureReasons = []; // 收集失败原因
 
   for (let i = 0; i < accounts.length; i++) {
     let { username, password, apiuser } = accounts[i];
@@ -37,7 +42,9 @@ async function main() {
       const userRes = await userInfo(cookie, apiuser);
       const user = userRes.data;
       if (user.success !== true) {
-        console.error('登录失败：', user.msg || userRes.data);
+        const errorMsg = `账户 ${i + 1} (${username}) 登录失败：${user.msg || JSON.stringify(userRes.data)}`;
+        console.error(errorMsg);
+        failureReasons.push(errorMsg);
         failCount++;
         continue;
       }
@@ -46,16 +53,17 @@ async function main() {
       // 执行签到
       const res = await signIn(cookie, apiuser);
       if (res.data.success === "success" || res.data.success === true) {
-        const successMsg = `账户 ${i + 1} 签到成功：${res.data.msg || JSON.stringify(res.data)}`;
+        const successMsg = `账户 ${i + 1} (${username}) 签到成功：${res.data.msg || JSON.stringify(res.data)}`;
         console.log(successMsg);
         successCount++;
       } else {
-        const failMsg = `账户 ${i + 1} 签到失败：${res.data.msg || JSON.stringify(res.data)}`;
-        console.log(failMsg);
+        const errorMsg = `账户 ${i + 1} (${username}) 签到失败：${res.data.msg || JSON.stringify(res.data)}`;
+        console.log(errorMsg);
+        failureReasons.push(errorMsg);
         failCount++;
       }
     } catch (err) {
-      let errorMsg = `账户 ${i + 1} 脚本异常`;
+      let errorMsg = `账户 ${i + 1} (${username}) 脚本异常`;
       if (err.response) {
         errorMsg += `: ${err.response.status} - ${JSON.stringify(err.response.data)}`;
         console.error('接口请求错误', err.response.status, err.response.data);
@@ -63,12 +71,22 @@ async function main() {
         errorMsg += `: ${err.message}`;
         console.error('脚本异常', err.message);
       }
+      failureReasons.push(errorMsg);
       failCount++;
     }
   }
 
-  // 发送汇总通知
-  const summaryMsg = `签到完成：成功 ${successCount} 个，失败 ${failCount} 个`;
+  // 构建汇总通知消息
+  let summaryMsg = `签到完成：成功 ${successCount} 个，失败 ${failCount} 个`;
+  
+  // 如果有失败，添加失败原因
+  if (failureReasons.length > 0) {
+    summaryMsg += '\n\n失败原因：';
+    failureReasons.forEach(reason => {
+      summaryMsg += '\n- ' + reason;
+    });
+  }
+  
   console.log(`\n${summaryMsg}`);
   await sendWechatMessage(WEIXIN_WEBHOOK, summaryMsg);
 }

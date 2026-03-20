@@ -1,13 +1,71 @@
 const path = require('path');
+const fs = require('fs');
 
 // 输出当前工作目录和文件路径
 console.log('Current working directory:', process.cwd());
 console.log('env.js file path:', __dirname);
-console.log('Expected .env path:', path.resolve(__dirname, '../.env'));
+const envPath = path.resolve(__dirname, '../.env');
+console.log('Expected .env path:', envPath);
 
-// 尝试加载 .env 文件
-const dotenvResult = require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
-console.log('dotenv load result:', dotenvResult.error ? 'Failed: ' + dotenvResult.error.message : 'Success');
+// 手动解析 .env 文件
+function loadEnvFile(envPath) {
+  if (fs.existsSync(envPath)) {
+    console.log('.env file exists, manually parsing...');
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    const envVars = {};
+    
+    envContent.split('\n').forEach(line => {
+      line = line.trim();
+      if (line && !line.startsWith('#')) {
+        const [key, ...valueParts] = line.split('=');
+        if (key) {
+          const value = valueParts.join('=').trim();
+          envVars[key] = value;
+          // 同时设置到 process.env
+          process.env[key] = value;
+        }
+      }
+    });
+    
+    console.log('Manually parsed variables:');
+    Object.keys(envVars).forEach(key => {
+      if (key.includes('PASSWORD')) {
+        console.log(`${key}: ***`);
+      } else {
+        console.log(`${key}: ${envVars[key]}`);
+      }
+    });
+    
+    return envVars;
+  } else {
+    console.log('.env file does not exist');
+    return {};
+  }
+}
+
+// 手动加载 .env 文件
+const manualEnvVars = loadEnvFile(envPath);
+
+// 尝试使用 dotenv 加载（作为备用）
+try {
+  const dotenvResult = require('dotenv').config({ path: envPath });
+  console.log('dotenv load result:', dotenvResult.error ? 'Failed: ' + dotenvResult.error.message : 'Success');
+  
+  if (dotenvResult.parsed) {
+    console.log('dotenv parsed variables:');
+    Object.keys(dotenvResult.parsed).forEach(key => {
+      if (key.includes('PASSWORD')) {
+        console.log(`${key}: ***`);
+      } else {
+        console.log(`${key}: ${dotenvResult.parsed[key]}`);
+      }
+    });
+  } else {
+    console.log('dotenv parsed no variables');
+  }
+} catch (err) {
+  console.log('Error loading dotenv:', err.message);
+}
 
 console.log('Loading environment variables...');
 

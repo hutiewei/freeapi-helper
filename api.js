@@ -9,21 +9,32 @@ async function login(username, password, baseUrl) {
     }, {
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      maxRedirects: 0,
+      validateStatus: status => status >= 200 && status < 400
     });
-    
-    // 从响应头或响应体中获取 cookie
-    if (response.headers['set-cookie']) {
+
+    // 从响应头获取 cookie
+    if (response.headers && response.headers['set-cookie']) {
       return response.headers['set-cookie'].join('; ');
     }
-    
-    // 如果 cookie 在响应体中
-    if (response.data.cookie) {
-      return response.data.cookie;
+
+    // 从响应体中获取 cookie
+    if (response.data) {
+      if (typeof response.data.cookie === 'string') {
+        return response.data.cookie;
+      }
+      if (response.data.data && typeof response.data.data.cookie === 'string') {
+        return response.data.data.cookie;
+      }
     }
-    
-    throw new Error('未能从登录接口获取 cookie');
+
+    throw new Error(`未能从登录接口获取 cookie，status=${response.status}, body=${JSON.stringify(response.data)}`);
   } catch (error) {
+    if (error.response) {
+      console.error('登录失败:', error.response.status, error.response.data || error.message);
+      throw new Error(`登录失败: ${error.response.status} ${JSON.stringify(error.response.data)}`);
+    }
     console.error('登录失败:', error.message);
     throw error;
   }

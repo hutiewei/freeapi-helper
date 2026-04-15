@@ -8,7 +8,11 @@ async function login(username, password, baseUrl) {
       password: password
     }, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json, text/plain, */*',
+        'Origin': baseUrl,
+        'Referer': `${baseUrl}/console`,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
       },
       maxRedirects: 0,
       validateStatus: status => status >= 200 && status < 400
@@ -46,7 +50,9 @@ async function userInfo(cookie, user, baseUrl) {
     headers: {
       'cookie': cookie,
       'referer': `${baseUrl}/console`,
-      'new-api-user': user
+      'new-api-user': user,
+      'Accept': 'application/json, text/plain, */*',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
     }
   });
 }
@@ -58,7 +64,9 @@ async function signIn(cookie, user, baseUrl) {
       'cookie': cookie,
       'referer': `${baseUrl}/console`,
       'content-type': 'application/json',
-      'new-api-user': user
+      'new-api-user': user,
+      'Accept': 'application/json, text/plain, */*',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
     }
   });
 }

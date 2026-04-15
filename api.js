@@ -1,10 +1,9 @@
 const axios = require('axios');
-const BASE_URL = 'https://freeapi.dgbmc.top';
 
 // 通过用户名和密码获取 cookie
-async function login(username, password) {
+async function login(username, password, baseUrl) {
   try {
-    const response = await axios.post(`${BASE_URL}/api/user/login`, {
+    const response = await axios.post(`${baseUrl}/api/user/login`, {
       username: username,
       password: password
     }, {
@@ -31,23 +30,22 @@ async function login(username, password) {
 }
 
 // 获取用户信息（用于演示登录有效性）
-async function userInfo(cookie,user) {
-  return axios.get(`${BASE_URL}/api/user/self`, {
+async function userInfo(cookie, user, baseUrl) {
+  return axios.get(`${baseUrl}/api/user/self`, {
     headers: {
       'cookie': cookie,
-      'referer': 'https://freeapi.dgbmc.top/console',
+      'referer': `${baseUrl}/console`,
       'new-api-user': user
     }
   });
 }
 
 // 签到接口
-async function signIn(cookie,user) {
-  // 实际接口根据抓包可能需要调整URL和请求方式
-  return axios.post(`${BASE_URL}/api/user/checkin`, null, {
+async function signIn(cookie, user, baseUrl) {
+  return axios.post(`${baseUrl}/api/user/checkin`, null, {
     headers: {
       'cookie': cookie,
-      'referer': 'https://freeapi.dgbmc.top/console',
+      'referer': `${baseUrl}/console`,
       'content-type': 'application/json',
       'new-api-user': user
     }

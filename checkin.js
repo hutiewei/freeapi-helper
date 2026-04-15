@@ -29,17 +29,17 @@ async function main() {
   const failureReasons = []; // 收集失败原因
 
   for (let i = 0; i < accounts.length; i++) {
-    let { username, password, apiuser } = accounts[i];
-    console.log(`\n=== 处理账户 ${i + 1} ===`);
+    let { username, password, apiuser, baseUrl } = accounts[i];
+    console.log(`\n=== 处理账户 ${i + 1} (网站: ${baseUrl}) ===`);
 
     try {
       // 通过用户名密码登录获取 cookie
       console.log(`登录中 (${username})...`);
-      let cookie = await login(username, password);
+      let cookie = await login(username, password, baseUrl);
       console.log('登录成功，Cookie 已获取');
 
       // 用户信息检查
-      const userRes = await userInfo(cookie, apiuser);
+      const userRes = await userInfo(cookie, apiuser, baseUrl);
       const user = userRes.data;
       if (user.success !== true) {
         const errorMsg = `账户 ${i + 1} (${username}) 登录失败：${user.msg || JSON.stringify(userRes.data)}`;
@@ -51,7 +51,7 @@ async function main() {
       console.log(`登录成功，欢迎：${user.data?.username || user.data?.email || "未知用户"}`);
 
       // 执行签到
-      const res = await signIn(cookie, apiuser);
+      const res = await signIn(cookie, apiuser, baseUrl);
       if (res.data.success === "success" || res.data.success === true) {
         const successMsg = `账户 ${i + 1} (${username}) 签到成功：${res.data.msg || JSON.stringify(res.data)}`;
         console.log(successMsg);

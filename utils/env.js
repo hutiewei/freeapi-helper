@@ -72,25 +72,28 @@ console.log('Loading environment variables...');
 // 支持最多5个账户
 const accounts = [];
 for (let i = 1; i <= 5; i++) {
-  let username, password, apiuser;
+  let username, password, apiuser, baseUrl;
   if (i === 1) {
     username = process.env.USERNAME;
     password = process.env.PASSWORD;
     apiuser = process.env.APIUSER;
+    baseUrl = process.env.BASE_URL || 'https://freeapi.dgbmc.top';
   } else {
     username = process.env[`USERNAME_${i}`];
     password = process.env[`PASSWORD_${i}`];
     apiuser = process.env[`APIUSER_${i}`];
+    baseUrl = process.env[`BASE_URL_${i}`] || 'https://freeapi.dgbmc.top';
   }
   
   // 输出环境变量值（隐藏敏感信息）
   console.log(`Account ${i} - USERNAME${i === 1 ? '' : '_' + i}:`, username ? '已设置' : '未设置');
   console.log(`Account ${i} - PASSWORD${i === 1 ? '' : '_' + i}:`, password ? '已设置' : '未设置');
   console.log(`Account ${i} - APIUSER${i === 1 ? '' : '_' + i}:`, apiuser ? '已设置' : '未设置');
+  console.log(`Account ${i} - BASE_URL${i === 1 ? '' : '_' + i}:`, baseUrl);
   
   // 支持用户名密码方式
   if (username && password && apiuser) {
-    accounts.push({ username, password, apiuser });
+    accounts.push({ username, password, apiuser, baseUrl });
     console.log(`Account ${i} added to accounts list`);
   }
 }
